@@ -1,51 +1,173 @@
-# WORKING WITH EBS
-### NAME: DHARSHINI S
-### REGISTER NO : 212224100012
-## AIM:
-In this lab environment, access to AWS services and service actions might be restricted to the ones that are needed to complete the lab instructions. You might encounter errors if you attempt to access other services or perform actions beyond the ones that are described in this lab.
+# EBS
+## NAME: DHARSHINI S
+## REG NO: 212224100012
+## Aim
 
-## OBJECTIVE:
-Create an Amazon EBS volume *Attach and mount your volume to an EC2 instance *Create a snapshot of your volume *Create a new volume from your snapshot *Attach and mount the new volume to your EC2 instance
+To create and configure an Amazon Elastic Block Store (EBS) volume, attach and mount it to an Amazon EC2 instance, create a snapshot backup, and restore the snapshot to a new EBS volume.
 
-## Illustration:
-### STEP 1:
-In this step, you will create and attach an Amazon EBS volume to a new Amazon EC2 instance.You will see an existing volume that is being used by the Amazon EC2 instance. This volume has a size of 8 GiB, which makes it easy to distinguish from the volume you will create next, which will be 1 GiB in size.
+## Algorithm / Steps
 
-<img width="1917" height="1078" alt="Screenshot 2026-08-18 092910" src="https://github.com/user-attachments/assets/f2c044fc-e72a-41da-a95e-f69104b38ef3" />
-
-
-<img width="942" height="880" alt="image" src="https://github.com/user-attachments/assets/18f280e7-dc2c-42f0-b425-9c21959d7152" />
-
-
-### STEP 2:
-In this step, you will connect to the Lab EC2 instance using Session Manager.You can now attach your new volume to the Amazon EC2 instance.
-
-<img width="954" height="878" alt="image" src="https://github.com/user-attachments/assets/d1df7132-de61-4756-bfc5-2ce9af9130b5" />
-
-
-### STEP 3:
-In this step, you will add the new volume to a Linux instance as an ext3 file system under the /mnt/data-store mount point.
-
-<img width="948" height="880" alt="image" src="https://github.com/user-attachments/assets/7af198a9-5afa-4a85-a371-fc2b124a6d70" />
-
-<img width="954" height="878" alt="image" src="https://github.com/user-attachments/assets/83e9847f-7218-44b3-92a2-429565d3806b" />
-
-<img width="1906" height="1080" alt="Screenshot 2026-08-18 092331" src="https://github.com/user-attachments/assets/868c32e4-6b1d-49e4-8641-d99c17309c02" />
+1. Create a new Amazon EBS volume with a size of 1 GiB.
+2. Select the same Availability Zone as the EC2 instance.
+3. Attach the EBS volume to the EC2 instance using `/dev/sdb`.
+4. Connect to the EC2 instance using AWS Systems Manager Session Manager.
+5. Check the available storage using `df -h`.
+6. Create an `ext3` file system on the EBS volume.
+7. Create the `/mnt/data-store` directory.
+8. Mount the EBS volume to `/mnt/data-store`.
+9. Configure `/etc/fstab` for automatic mounting.
+10. Verify that the EBS volume is successfully mounted.
+11. Create `file.txt` inside the mounted EBS volume.
+12. Verify the contents of the created file.
+13. Create an EBS snapshot named `My Snapshot`.
+14. Delete `file.txt` from the original EBS volume.
+15. Create a new EBS volume from the snapshot.
+16. Attach the restored volume to the EC2 instance using `/dev/sdc`.
+17. Create the `/mnt/data-store2` directory.
+18. Mount the restored volume to `/mnt/data-store2`.
+19. Verify that `file.txt` has been successfully restored.
 
 
+## Program
 
-### STEP 4:
-You can create any number of point-in-time, consistent snapshots from Amazon EBS volumes at any time. Amazon EBS snapshots are stored in Amazon S3 with high durability. New Amazon EBS volumes can be created out of snapshots for cloning or restoring backups. Amazon EBS snapshots can also be easily shared among AWS users or copied over AWS regions.
+### 1. Check Available Storage
+
+```bash
+df -h
+```
+
+### 2. Create an ext3 File System
+
+```bash
+sudo mkfs -t ext3 /dev/sdb
+```
+
+### 3. Create a Mount Directory
+
+```bash
+sudo mkdir /mnt/data-store
+```
+
+### 4. Mount the EBS Volume
+
+```bash
+sudo mount /dev/sdb /mnt/data-store
+```
+
+### 5. Configure Automatic Mounting
+
+```bash
+echo "/dev/sdb   /mnt/data-store ext3 defaults,noatime 1 2" | sudo tee -a /etc/fstab
+```
+
+### 6. View the File System Configuration
+
+```bash
+cat /etc/fstab
+```
+
+### 7. Verify the Mounted Volume
+
+```bash
+df -h
+```
+
+### 8. Create a File in the EBS Volume
+
+```bash
+sudo sh -c "echo some text has been written > /mnt/data-store/file.txt"
+```
+
+### 9. Read the File
+
+```bash
+cat /mnt/data-store/file.txt
+```
+
+### 10. Delete the File
+
+```bash
+sudo rm /mnt/data-store/file.txt
+```
+
+### 11. Verify File Deletion
+
+```bash
+ls /mnt/data-store/
+```
+
+### 12. Create a Mount Directory for the Restored Volume
+
+```bash
+sudo mkdir /mnt/data-store2
+```
+
+### 13. Mount the Restored EBS Volume
+
+```bash
+sudo mount /dev/sdc /mnt/data-store2
+```
+
+### 14. Verify Snapshot Restoration
+
+```bash
+ls /mnt/data-store2/
+```
+
+Expected output:
+
+```text
+file.txt
+```
+
+## Outputs
+
+### Output 1: EBS Volume Created
+
+The AWS EC2 Volumes page shows the newly created `My Volume` EBS volume with a size of 1 GiB.
+
+<img width="1920" height="1200" alt="Screenshot 2026-08-03 160033" src="https://github.com/user-attachments/assets/5f5a3236-9d0a-4b9e-ba3a-4de0fec4002b" />
 
 
-<img width="957" height="1078" alt="image" src="https://github.com/user-attachments/assets/2331851b-17cd-4518-95d8-efb17c8afd88" />
-
-<img width="960" height="876" alt="image" src="https://github.com/user-attachments/assets/5e9be3a4-096f-49f8-abc8-292f60e50622" />
+---
 
 
-### STEP 5:
+### Output 2: EBS Volume Mounted Successfully
 
-<img width="954" height="878" alt="image" src="https://github.com/user-attachments/assets/9ecca606-b74c-4efc-9e29-8b11a0eff974" />
+The `df -h` command displays the mounted EBS volume at `/mnt/data-store`.
 
-## RESULT:
-Successfully created, managed, and deleted an EBS bucket on AWS, demonstrating the ability to upload, access, and control objects within Amazon EBS.
+<img width="1233" height="907" alt="Screenshot 2026-08-03 155511" src="https://github.com/user-attachments/assets/cf5fb229-af75-49ee-8aa0-031750afa10b" />
+
+---
+
+### Output 3: File Created and Verified
+
+The file `file.txt` is successfully created inside the EBS volume and the stored text is displayed.
+
+```text
+some text has been written
+```
+<img width="1147" height="280" alt="image" src="https://github.com/user-attachments/assets/6da9f10b-bff5-4ad4-a80e-0d9c860761b1" />
+
+
+---
+
+### Output 4: EBS Snapshot Created
+
+The AWS EC2 Snapshots page shows `My Snapshot` with the snapshot creation completed successfully.
+<img width="1920" height="1200" alt="Screenshot 2026-08-03 155619" src="https://github.com/user-attachments/assets/3b341dd3-2c5c-4816-a7b5-dbb647e81d09" />
+
+
+---
+
+### Output 5: Snapshot Restored Successfully
+
+The snapshot is restored to a new EBS volume named `Restored Volume`. After attaching and mounting the restored volume, the deleted `file.txt` is successfully recovered.
+
+```text
+file.txt
+```
+<img width="1042" height="175" alt="image" src="https://github.com/user-attachments/assets/e4b96fc0-8bc9-4274-82b5-8e1ec12f3f3a" />
+
+## Result
+Amazon EBS was successfully used to create, attach, back up, restore, and recover data on an EC2 instance using snapshots.
